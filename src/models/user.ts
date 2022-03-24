@@ -69,5 +69,28 @@ export class userSection{
           throw new Error(`Could not add new user ${obj.firstName} ${obj.lastName}. Error: ${err}`)
       }
   }
+
+  async authenticate(username: string, password: string): Promise<user | null> {
+    const sql = 'SELECT password FROM users WHERE username=($1)'
+    // @ts-ignore
+    const conn = await Client.connect()
+
+    const result = await conn.query(sql, [username])
+
+    console.log(password+pepper)
+
+    if(result.rows.length) {
+
+      const user = result.rows[0]
+
+      console.log(user)
+
+      if (bcrypt.compareSync(password+pepper, user.password)) {
+        return user
+      }
+    }
+
+    return null
+  }
      
 }
