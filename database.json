@@ -1,0 +1,16 @@
+{
+    "dev": {
+        "driver": "pg",
+        "host": "127.0.0.1",
+        "database": "store",
+        "user": "el5amisi",
+        "password": "el5amisi"
+    },
+    "test": {
+        "driver": "pg",
+        "host": "127.0.0.1",
+        "database": "store",
+        "user": "el5amisi",
+        "password": "el5amisi"
+    }
+}
