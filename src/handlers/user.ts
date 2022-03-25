@@ -5,6 +5,8 @@ import dotenv from 'dotenv';
 import authN from '../middleware/authN'
 
 dotenv.config();
+
+const TOKEN_SECRET: string = <string>process.env.TOKEN_SECRET;
 const section = new userSection()
 
 const index = async (_req: Request, res: Response) => {
@@ -27,7 +29,7 @@ const create = async (req: Request, res: Response) => {
 
         const saved = await section.create(nUser)
         saved.password = '';
-        const token = jwt.sign({user: saved}, process.env.TOKEN_SECRET);
+        const token = jwt.sign({user: saved}, TOKEN_SECRET);
         res.json(token)
     } catch(err) {
         res.status(400).json(err)
@@ -38,7 +40,7 @@ const login = async (req: Request, res: Response)=>{
     try{
         const {username, password} = req.body
         const response = await section.authenticate(username, password)
-        const token = jwt.sign({user: response}, process.env.TOKEN_SECRET)
+        const token = jwt.sign({user: response}, TOKEN_SECRET)
         res.json(token)
     }catch(err){
         res.status(400).json(err)

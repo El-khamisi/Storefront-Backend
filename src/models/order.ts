@@ -6,7 +6,7 @@ enum status {
     complete = 'complete'
 }
 
-export type orders = {
+export type order = {
     id?: number;
     product_id: number;
     qnt_product: number;
@@ -14,12 +14,12 @@ export type orders = {
     curr_status: status;
 }
 
-export class productSection{
-    async index(): Promise<product[]>{
+export class orderSection{
+    async index(): Promise<order[]>{
         try{
             //@ts-ignore
             const conn = await  Client.connect();
-            const sql = 'SELECT * FROM products';
+            const sql = 'SELECT * FROM orders';
 
             const result = await conn.query(sql)
 
@@ -27,44 +27,44 @@ export class productSection{
 
             return result.rows ;
         } catch (err) {
-            throw new Error(`Could not get products. Error: ${err}`)
+            throw new Error(`Could not get orders. Error: ${err}`)
         }
     }
   
-
-    async show(id: string): Promise<product> {
+    async create(obj: order): Promise<order> {
         try {
-            const sql = 'SELECT * FROM products WHERE id=($1)'
-            // @ts-ignore
-            const conn = await Client.connect()
-
-            const result = await conn.query(sql, [id])
-
-            conn.release()
-
-            return result.rows[0]
+      const sql = 'INSERT INTO orders (product_id, qnt_product, user_id, curr_status) VALUES($1, $2) RETURNING *'
+      // @ts-ignore
+      const conn = await Client.connect()
+  
+      const result = await conn
+          .query(sql, [obj.product_id, obj.qnt_product, obj.user_id, obj.curr_status])
+  
+      const order = result.rows[0]
+  
+      conn.release()
+  
+      return order
         } catch (err) {
-            throw new Error(`Could not find product ${id}. Error: ${err}`)
+            throw new Error(`Could not add new order. Error: ${err}`)
         }
     }
 
-  async create(obj: product): Promise<product> {
-      try {
-    const sql = 'INSERT INTO products (name, price) VALUES($1, $2) RETURNING *'
-    // @ts-ignore
-    const conn = await Client.connect()
+    async showUserOrders(userId: number): Promise<order[]> {
+        try {
+            const sql = 'SELECT * FROM orders WHERE user_id=($1)'
+            // @ts-ignore
+            const conn = await Client.connect()
 
-    const result = await conn
-        .query(sql, [obj.name, obj.price])
+            const result = await conn.query(sql, [userId])
 
-    const book = result.rows[0]
+            conn.release()
 
-    conn.release()
+            return result.rows
+        } catch (err) {
+            throw new Error(`Could not find orders for user ${userId}. Error: ${err}`)
+        }
+    }
 
-    return book
-      } catch (err) {
-          throw new Error(`Could not add new product ${obj.name}. Error: ${err}`)
-      }
-  }
      
 }
