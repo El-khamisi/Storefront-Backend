@@ -40,9 +40,9 @@ class productSection {
             const conn = await database_1.default.connect();
             const result = await conn
                 .query(sql, [obj.name, obj.price]);
-            const book = result.rows[0];
+            const product = result.rows[0];
             conn.release();
-            return book;
+            return product;
         }
         catch (err) {
             throw new Error(`Could not add new product ${obj.name}. Error: ${err}`);

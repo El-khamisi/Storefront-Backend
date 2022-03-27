@@ -4,13 +4,14 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 
 dotenv.config();
-const pepper = process.env.PEPPER;
+const pepper: string = <string>process.env.PEPPER;
 const saltrounds: string = <string>process.env.SALT_ROUNDS 
 
 export type user = {
     id?: number;
     firstName: string;
-    lastName: number;
+    lastName: string;
+    username: string;
     password: string;
 }
 
@@ -41,6 +42,7 @@ export class userSection{
             const result = await conn.query(sql, [id])
 
             conn.release()
+            
 
             return result.rows[0]
         } catch (err) {
@@ -49,48 +51,44 @@ export class userSection{
     }
 
   async create(obj: user): Promise<user> {
-      try {
-    const sql = 'INSERT INTO products (firstName, lastName, password) VALUES($1, $2, $3) RETURNING *'
+    try {
+    const sql = 'INSERT INTO users (firstName, lastName, username, password) VALUES($1, $2, $3, $4) RETURNING *'
     // @ts-ignore
     const conn = await Client.connect()
 
-    const hashed = bcrypt.hashSync(obj.password+pepper,
-        parseInt(saltrounds));
 
-    const result = await conn
-        .query(sql, [obj.firstName, obj.lastName, hashed])
-
-    const book = result.rows[0]
-
+        
+    const hashed:string = <string>bcrypt.hashSync(obj.password+pepper,
+        parseInt(saltrounds));   
+    
+    const result = await conn.query(sql, [obj.firstName, obj.lastName, obj.username, hashed])
+    const user =  result.rows[0]
     conn.release()
+    return user
 
-    return book
-      } catch (err) {
-          throw new Error(`Could not add new user ${obj.firstName} ${obj.lastName}. Error: ${err}`)
-      }
+    } catch (err) {
+    throw new Error(`Could not add new user ${obj.firstName} ${obj.lastName}. Error: ${err}`)
+    }
   }
 
-  async authenticate(username: string, password: string): Promise<user | null> {
+  async authenticate(username: string, password: string): Promise<user | Error> {
     const sql = 'SELECT password FROM users WHERE username=($1)'
     // @ts-ignore
     const conn = await Client.connect()
 
     const result = await conn.query(sql, [username])
 
-    console.log(password+pepper)
 
     if(result.rows.length) {
 
       const user = result.rows[0]
 
-      console.log(user)
-
-      if (bcrypt.compareSync(password+pepper, user.password)) {
+      if (bcrypt.compareSync(password+pepper, user.password)){
         return user
       }
     }
 
-    return null
+    throw new Error('Password invalid');
   }
      
 }

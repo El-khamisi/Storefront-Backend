@@ -15,7 +15,7 @@ const index = async (_req, res) => {
     res.json(response);
 };
 const show = async (req, res) => {
-    const response = await section.show(req.body.id);
+    const response = await section.show(req.params.id);
     res.json(response);
 };
 const create = async (req, res) => {
@@ -23,15 +23,17 @@ const create = async (req, res) => {
         const nUser = {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
+            username: req.body.username,
             password: req.body.password
         };
         const saved = await section.create(nUser);
         saved.password = '';
         const token = jsonwebtoken_1.default.sign({ user: saved }, TOKEN_SECRET);
-        res.json(token);
+        res.json({ token });
     }
     catch (err) {
-        res.status(400).json(err);
+        if (err instanceof Error)
+            res.status(400).json({ e: err.message });
     }
 };
 const login = async (req, res) => {
@@ -39,15 +41,16 @@ const login = async (req, res) => {
         const { username, password } = req.body;
         const response = await section.authenticate(username, password);
         const token = jsonwebtoken_1.default.sign({ user: response }, TOKEN_SECRET);
-        res.json(token);
+        res.json({ token });
     }
     catch (err) {
-        res.status(400).json(err);
+        if (err instanceof Error)
+            res.status(400).json({ e: err.message });
     }
 };
 const userRoutes = (app) => {
     app.get('/users', authN_1.default, index);
-    app.get('/users/:id', authN_1.default, show);
+    app.get('/user/:id', authN_1.default, show);
     app.post('/signup', create);
     app.post('/login', login);
 };

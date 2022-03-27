@@ -11,7 +11,7 @@ const index = async (_req, res) => {
     res.json(response);
 };
 const show = async (req, res) => {
-    const response = await section.show(req.body.id);
+    const response = await section.show(req.params.id);
     res.json(response);
 };
 const create = async (req, res) => {
@@ -24,12 +24,13 @@ const create = async (req, res) => {
         res.json(saved);
     }
     catch (err) {
-        res.status(400).json(err);
+        if (err instanceof Error)
+            res.status(400).json({ e: err.message });
     }
 };
 const productRoutes = (app) => {
     app.get('/products', index);
-    app.get('/products/:id', show);
+    app.get('/product/:id', show);
     app.post('/products', authN_1.default, create);
 };
 exports.default = productRoutes;

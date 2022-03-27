@@ -10,7 +10,7 @@ const index = async (_req: Request, res: Response) => {
 }
 
 const show = async (req: Request, res: Response) => {
-   const response = await section.show(req.body.id)
+   const response = await section.show(req.params.id)
    res.json(response)
 }
 
@@ -24,14 +24,15 @@ const create = async (req: Request, res: Response) => {
         const saved = await section.create(product)
         res.json(saved)
     } catch(err) {
-        res.status(400).json(err)
+      if(err instanceof Error)res.status(400).json({e: err.message})
+
     }
 }
 
 
 const productRoutes = (app: express.Application) => {
   app.get('/products', index)
-  app.get('/products/:id', show)
+  app.get('/product/:id', show)
   app.post('/products',authN, create)
 }
 

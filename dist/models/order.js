@@ -27,7 +27,7 @@ class orderSection {
     }
     async create(obj) {
         try {
-            const sql = 'INSERT INTO orders (product_id, qnt_product, user_id, curr_status) VALUES($1, $2) RETURNING *';
+            const sql = 'INSERT INTO orders (product_id, qnt_product, user_id, curr_status) VALUES($1, $2, $3, $4) RETURNING *';
             // @ts-ignore
             const conn = await database_1.default.connect();
             const result = await conn

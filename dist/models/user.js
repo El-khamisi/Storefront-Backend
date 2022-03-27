@@ -40,15 +40,14 @@ class userSection {
     }
     async create(obj) {
         try {
-            const sql = 'INSERT INTO products (firstName, lastName, password) VALUES($1, $2, $3) RETURNING *';
+            const sql = 'INSERT INTO users (firstName, lastName, username, password) VALUES($1, $2, $3, $4) RETURNING *';
             // @ts-ignore
             const conn = await database_1.default.connect();
             const hashed = bcrypt_1.default.hashSync(obj.password + pepper, parseInt(saltrounds));
-            const result = await conn
-                .query(sql, [obj.firstName, obj.lastName, hashed]);
-            const book = result.rows[0];
+            const result = await conn.query(sql, [obj.firstName, obj.lastName, obj.username, hashed]);
+            const user = result.rows[0];
             conn.release();
-            return book;
+            return user;
         }
         catch (err) {
             throw new Error(`Could not add new user ${obj.firstName} ${obj.lastName}. Error: ${err}`);
@@ -59,15 +58,13 @@ class userSection {
         // @ts-ignore
         const conn = await database_1.default.connect();
         const result = await conn.query(sql, [username]);
-        console.log(password + pepper);
         if (result.rows.length) {
             const user = result.rows[0];
-            console.log(user);
             if (bcrypt_1.default.compareSync(password + pepper, user.password)) {
                 return user;
             }
         }
-        return null;
+        throw new Error('Password invalid');
     }
 }
 exports.userSection = userSection;

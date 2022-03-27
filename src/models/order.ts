@@ -33,13 +33,13 @@ export class orderSection{
   
     async create(obj: order): Promise<order> {
         try {
-      const sql = 'INSERT INTO orders (product_id, qnt_product, user_id, curr_status) VALUES($1, $2) RETURNING *'
+      const sql = 'INSERT INTO orders (product_id, qnt_product, user_id, curr_status) VALUES($1, $2, $3, $4) RETURNING *'
       // @ts-ignore
       const conn = await Client.connect()
   
       const result = await conn
           .query(sql, [obj.product_id, obj.qnt_product, obj.user_id, obj.curr_status])
-  
+            
       const order = result.rows[0]
   
       conn.release()
@@ -50,7 +50,7 @@ export class orderSection{
         }
     }
 
-    async showUserOrders(userId: number): Promise<order[]> {
+    async showUserOrders(userId: string): Promise<order[]> {
         try {
             const sql = 'SELECT * FROM orders WHERE user_id=($1)'
             // @ts-ignore

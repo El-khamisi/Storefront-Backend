@@ -5,37 +5,42 @@ These are the notes from a meeting with the frontend developer that describe wha
 
 ## API Endpoints
 #### Products
-- Index     products/ [GET]
-- Show      products/show/:id [GET]
-- Create [token required]       products [POST]
+- Index to get all Products     /products [GET]
+- Show One product              /product/:id [GET]
+- Create One product            /products [POST]     [token required] 
 
 #### Users
-- Index [token required]    users/ [GET]
-- Show [token required]     users/:id [GET]    
-- Create N[token required]      signup [POST]
-- Login                         login [POST]
+- Index to get all Users        /users/ [GET]        [token required]
+- Show One User                 /user/:id [GET]     [token required]   
+- Create A new User             /signup [POST]      
+- Login an existing User        /login [POST]
 
 #### Orders
-- Current Order by user (args: user id)[token required] orders/:userID [GET]
+- Current Order by user (args: user id) /orders/:userID [GET] [token required]
+- Create A new order                    /orders [POST] [token required]
+- Index to get all Orders               /orders [GET]
 
 
 ## Data Shapes
 #### Product
--  id: Number
-- name: String
-- price: Number
+    id SERIAL PRIMARY  KEY,
+    name VARCHAR(150),
+    price integer
 
 
 #### User
-- id: Number
-- firstName: String
-- lastName: String
-- password: String
+    id SERIAL PRIMARY KEY,
+    firstName VARCHAR(50),
+    lastName VARCHAR(50),
+    userName VARCHAR(10),
+    password VARCHAR(120)
 
 #### Orders
-- id: Number
-- id of each product in the order-> product_id: Number
-- quantity of each product in the order-> qnt_product: Number
-- user_id: Number
-- status of order (active or complete) -> curr_status ENUM
+    id SERIAL PRIMARY KEY,
+    product_id bigint REFERENCES products(id),
+    qnt_product integer,
+    user_id bigint REFERENCES users(id),
+    curr_status status
+
+#### status AS ENUM ('active', 'complete');    
 

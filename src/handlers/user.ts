@@ -15,7 +15,7 @@ const index = async (_req: Request, res: Response) => {
 }
 
 const show = async (req: Request, res: Response) => {
-   const response = await section.show(req.body.id)
+   const response = await section.show(req.params.id)
    res.json(response)
 }
 
@@ -24,15 +24,17 @@ const create = async (req: Request, res: Response) => {
         const nUser: user = {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
+            username: req.body.username,
             password: req.body.password
         }
 
         const saved = await section.create(nUser)
         saved.password = '';
+          
         const token = jwt.sign({user: saved}, TOKEN_SECRET);
-        res.json(token)
+        res.json({token})
     } catch(err) {
-        res.status(400).json(err)
+        if(err instanceof Error)res.status(400).json({e: err.message})
     }
 }
 
@@ -41,15 +43,15 @@ const login = async (req: Request, res: Response)=>{
         const {username, password} = req.body
         const response = await section.authenticate(username, password)
         const token = jwt.sign({user: response}, TOKEN_SECRET)
-        res.json(token)
+        res.json({token})
     }catch(err){
-        res.status(400).json(err)
+        if(err instanceof Error)res.status(400).json({e: err.message})
     }
 }
 
 const userRoutes = (app: express.Application) => {
   app.get('/users',authN, index)
-  app.get('/users/:id',authN, show)
+  app.get('/user/:id',authN, show)
   app.post('/signup', create)
   app.post('/login', login)
 }

@@ -13,25 +13,27 @@ const index = async (_req, res) => {
 const create = async (req, res) => {
     try {
         const order = {
-            product_id: req.body.product_id,
-            qnt_product: req.body.qnt_product,
-            user_id: req.body.user_id,
+            product_id: parseInt(req.body.product_id),
+            qnt_product: parseInt(req.body.qnt_product),
+            user_id: parseInt(req.body.user_id),
             curr_status: req.body.curr_status
         };
         const saved = await section.create(order);
         res.json(saved);
     }
     catch (err) {
-        res.status(400).json(err);
+        if (err instanceof Error)
+            res.status(400).json({ e: err.message });
     }
 };
 const getByUser = async (req, res) => {
     try {
-        const response = await section.showUserOrders(req.body.userID);
+        const response = await section.showUserOrders(req.params.userID);
         res.json(response);
     }
     catch (err) {
-        res.status(400).json(err);
+        if (err instanceof Error)
+            res.status(400).json({ e: err.message });
     }
 };
 const orderRoutes = (app) => {
