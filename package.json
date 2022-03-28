@@ -7,7 +7,8 @@
     "build": "npx tsc",
     "devServer": "nodemon src/server.ts",
     "jasmine": "jasmine",
-    "test": "npm run build && npm run jasmine",
+    "migrate": "db-migrate --env test up && db-migrate up",
+    "test": "ENV=test db-migrate --env test up && npm run build && npm run jasmine && db-migrate db:drop test",
     "lint": "eslint . --ext .ts",
     "prettier": "prettier --config .prettierrc 'src/**/*.ts' --write"
   },
