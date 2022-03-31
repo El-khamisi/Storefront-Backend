@@ -38,8 +38,7 @@ class productSection {
             const sql = 'INSERT INTO products (name, price) VALUES($1, $2) RETURNING *';
             // @ts-ignore
             const conn = await database_1.default.connect();
-            const result = await conn
-                .query(sql, [obj.name, obj.price]);
+            const result = await conn.query(sql, [obj.name, obj.price]);
             const product = result.rows[0];
             conn.release();
             return product;

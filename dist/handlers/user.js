@@ -24,7 +24,7 @@ const create = async (req, res) => {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             username: req.body.username,
-            password: req.body.password
+            password: req.body.password,
         };
         const saved = await section.create(nUser);
         saved.password = '';

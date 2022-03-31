@@ -13,10 +13,8 @@ const index = async (_req, res) => {
 const create = async (req, res) => {
     try {
         const order = {
-            product_id: parseInt(req.body.product_id),
-            qnt_product: parseInt(req.body.qnt_product),
             user_id: parseInt(req.body.user_id),
-            curr_status: req.body.curr_status
+            curr_status: req.body.curr_status,
         };
         const saved = await section.create(order);
         res.json(saved);
@@ -26,9 +24,9 @@ const create = async (req, res) => {
             res.status(400).json({ e: err.message });
     }
 };
-const getByUser = async (req, res) => {
+const userOrder = async (req, res) => {
     try {
-        const response = await section.showUserOrders(req.params.userID);
+        const response = await section.showUserOrder(req.params.userID);
         res.json(response);
     }
     catch (err) {
@@ -36,9 +34,23 @@ const getByUser = async (req, res) => {
             res.status(400).json({ e: err.message });
     }
 };
+const addProduct = async (_req, res) => {
+    const productId = _req.body.productId;
+    const orderId = _req.params.id;
+    const quantity = parseInt(_req.body.quantity);
+    try {
+        const addedProduct = await section.addProduct(productId, orderId, quantity);
+        res.json(addedProduct);
+    }
+    catch (err) {
+        res.status(400);
+        res.json(err);
+    }
+};
 const orderRoutes = (app) => {
     app.get('/orders', index);
     app.post('/orders', authN_1.default, create);
-    app.get('/orders/:userID', authN_1.default, getByUser);
+    app.get('/orders/:userID', authN_1.default, userOrder);
+    app.post('/orders/:id/products', addProduct);
 };
 exports.default = orderRoutes;

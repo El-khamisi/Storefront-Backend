@@ -27,11 +27,10 @@ class orderSection {
     }
     async create(obj) {
         try {
-            const sql = 'INSERT INTO orders (product_id, qnt_product, user_id, curr_status) VALUES($1, $2, $3, $4) RETURNING *';
+            const sql = 'INSERT INTO orders (user_id, curr_status) VALUES($1, $2) RETURNING *';
             // @ts-ignore
             const conn = await database_1.default.connect();
-            const result = await conn
-                .query(sql, [obj.product_id, obj.qnt_product, obj.user_id, obj.curr_status]);
+            const result = await conn.query(sql, [obj.user_id, obj.curr_status]);
             const order = result.rows[0];
             conn.release();
             return order;
@@ -40,7 +39,7 @@ class orderSection {
             throw new Error(`Could not add new order. Error: ${err}`);
         }
     }
-    async showUserOrders(userId) {
+    async showUserOrder(userId) {
         try {
             const sql = 'SELECT * FROM orders WHERE user_id=($1)';
             // @ts-ignore
@@ -51,6 +50,21 @@ class orderSection {
         }
         catch (err) {
             throw new Error(`Could not find orders for user ${userId}. Error: ${err}`);
+        }
+    }
+    async addProduct(productId, orderId, qnt_product) {
+        try {
+            const sql = 'INSERT INTO order_products (product_id, order_id, qnt_product) VALUES($1, $2, $3) RETURNING *';
+            //@ts-ignore
+            const conn = await database_1.default.connect();
+            const result = await conn.query(sql, [productId, orderId, qnt_product]);
+            const order = result.rows[0];
+            //   console.log(order);
+            conn.release();
+            return order;
+        }
+        catch (err) {
+            throw new Error(`Could not add product ${productId} to order ${orderId}: ${err}`);
         }
     }
 }

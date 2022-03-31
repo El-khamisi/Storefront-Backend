@@ -6,6 +6,7 @@
   "scripts": {
     "build": "npx tsc",
     "devServer": "nodemon src/server.ts",
+    "start": "npm run build && node './dist/server.js'",
     "jasmine": "jasmine",
     "migrate": "db-migrate --env test up && db-migrate up",
     "test": "ENV=test db-migrate --env test up && npm run build && npm run jasmine && db-migrate db:drop test",
@@ -37,6 +38,7 @@
     "jasmine-spec-reporter": "^6.0.0",
     "jasmine-ts": "^0.3.0",
     "nodemon": "^2.0.15",
+    "prettier": "^2.6.1",
     "supertest": "^6.2.2",
     "ts-node": "^9.1.1",
     "tsc-watch": "^4.2.9",
