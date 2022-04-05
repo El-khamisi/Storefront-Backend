@@ -82,14 +82,14 @@ describe('Orders handlers', () => {
   });
 
   it('Current Order by user ', async () => {
-    const response = await req.get(`/orders/1`).set('authorization', `Bearer ${token}`);
+    const response = await req.get(`/order/1`).set('authorization', `Bearer ${token}`);
 
     expect(response.body[0].user_id).toBe('1');
     expect(response.status).toEqual(200);
   });
 
   it('Add product to order', async () => {
-    const response = await req.post(`/orders/1/products`).set('authorization', `Bearer ${token}`).send({
+    const response = await req.post(`/order/1/products`).set('authorization', `Bearer ${token}`).send({
       productId: '2',
       quantity: 20,
     });
