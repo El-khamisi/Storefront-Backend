@@ -12,11 +12,11 @@ export type order = {
   curr_status: status;
 };
 export type order_product = {
-  id?: number,
-  product_id: string,
-  order_id: string,
-  qnt_product: number
-}
+  id?: number;
+  product_id: string;
+  order_id: string;
+  qnt_product: number;
+};
 
 export class orderSection {
   async index(): Promise<order[]> {

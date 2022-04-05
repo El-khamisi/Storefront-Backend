@@ -43,12 +43,10 @@ describe('Test endpoints responses', () => {
 
     expect(response.status).toEqual(200);
   });
-
-
 });
 
- //Products Describe
- describe('Products handlers', () => {
+//Products Describe
+describe('Products handlers', () => {
   it('create a new product', async () => {
     const response = await req.post(`/products`).set('authorization', `Bearer ${token}`).set('Accept', 'application/json').send({ name: 'product1', price: '100' });
 
@@ -69,33 +67,32 @@ describe('Test endpoints responses', () => {
   });
 });
 
-
-  //Orders Describe
-  describe('Orders handlers', () => {
-    it('Show all Orders', async () => {
-      const response = await req.get(`/orders`).set('authorization', `Bearer ${token}`);
-      expect(response.status).toEqual(200);
-    });
-
-    it('create a new order', async () => {
-      const response = await req.post(`/orders`).set('authorization', `Bearer ${token}`).set('Accept', 'application/json').send({ user_id: '1', curr_status: 'active' });
-
-      expect(response.body.user_id).toBe('1');
-      expect(response.status).toEqual(200);
-    });
-
-    it('Current Order by user ', async () => {
-      const response = await req.get(`/orders/1`).set('authorization', `Bearer ${token}`);
-
-      expect(response.body[0].user_id).toBe('1');
-      expect(response.status).toEqual(200);
-    });
-
-    it('Add product to order', async () => {
-      const response = await req.post(`/orders/1/products`).set('authorization', `Bearer ${token}`).send({
-        productId: '2',
-        quantity: 20,
-      });
-      expect(response.body.qnt_product).toBe(20);
-    });
+//Orders Describe
+describe('Orders handlers', () => {
+  it('Show all Orders', async () => {
+    const response = await req.get(`/orders`).set('authorization', `Bearer ${token}`);
+    expect(response.status).toEqual(200);
   });
+
+  it('create a new order', async () => {
+    const response = await req.post(`/orders`).set('authorization', `Bearer ${token}`).set('Accept', 'application/json').send({ user_id: '1', curr_status: 'active' });
+
+    expect(response.body.user_id).toBe('1');
+    expect(response.status).toEqual(200);
+  });
+
+  it('Current Order by user ', async () => {
+    const response = await req.get(`/orders/1`).set('authorization', `Bearer ${token}`);
+
+    expect(response.body[0].user_id).toBe('1');
+    expect(response.status).toEqual(200);
+  });
+
+  it('Add product to order', async () => {
+    const response = await req.post(`/orders/1/products`).set('authorization', `Bearer ${token}`).send({
+      productId: '2',
+      quantity: 20,
+    });
+    expect(response.body.qnt_product).toBe(20);
+  });
+});

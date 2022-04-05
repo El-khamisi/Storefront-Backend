@@ -88,7 +88,6 @@ export class userSection {
     }
   }
 
-
   async delete(id: string): Promise<user> {
     try {
       const sql = 'DELETE FROM users WHERE id=($1)';
