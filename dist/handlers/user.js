@@ -11,18 +11,30 @@ dotenv_1.default.config();
 const TOKEN_SECRET = process.env.TOKEN_SECRET;
 const section = new user_1.userSection();
 const index = async (_req, res) => {
-    const response = await section.index();
-    res.json(response);
+    try {
+        const response = await section.index();
+        res.json(response);
+    }
+    catch (err) {
+        if (err instanceof Error)
+            res.status(500).json({ e: err.message });
+    }
 };
 const show = async (req, res) => {
-    const response = await section.show(req.params.id);
-    res.json(response);
+    try {
+        const response = await section.show(req.params.id);
+        res.json(response);
+    }
+    catch (err) {
+        if (err instanceof Error)
+            res.status(500).json({ e: err.message });
+    }
 };
 const create = async (req, res) => {
     try {
         const nUser = {
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
             username: req.body.username,
             password: req.body.password,
         };

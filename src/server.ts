@@ -7,7 +7,7 @@ import userRoutes from './handlers/user';
 import orderRoutes from './handlers/orders';
 
 const app: express.Application = express();
-const port  = process.env.PORT || 5050;
+const port = process.env.PORT || 5050;
 
 app.use(bodyParser.json());
 

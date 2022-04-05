@@ -16,10 +16,10 @@ These are the notes from a meeting with the frontend developer that describe wha
 - Login an existing User        /login [POST]
 
 #### Orders
-- Current Order by user (args: user id) /orders/:userID [GET] [token required]
+- Current Order by user (args: user id) /order/:userID [GET] [token required]
 - Create A new order                    /orders [POST] [token required]
 - Index to get all Orders               /orders [GET]
-
+- Add product to order                  /order/:id/products     **id -> is order ID
 
 ## Data Shapes
 #### Product

@@ -5,13 +5,21 @@ import authN from '../middleware/authN';
 const section = new productSection();
 
 const index = async (_req: Request, res: Response) => {
-  const response = await section.index();
-  res.json(response);
+  try {
+    const response = await section.index();
+    res.json(response);
+  } catch (err) {
+    if (err instanceof Error) res.status(500).json({ e: err.message });
+  }
 };
 
 const show = async (req: Request, res: Response) => {
-  const response = await section.show(req.params.id);
-  res.json(response);
+  try {
+    const response = await section.show(req.params.id);
+    res.json(response);
+  } catch (err) {
+    if (err instanceof Error) res.status(500).json({ e: err.message });
+  }
 };
 
 const create = async (req: Request, res: Response) => {

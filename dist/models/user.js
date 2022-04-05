@@ -44,27 +44,48 @@ class userSection {
             // @ts-ignore
             const conn = await database_1.default.connect();
             const hashed = bcrypt_1.default.hashSync(obj.password + pepper, parseInt(saltrounds));
-            const result = await conn.query(sql, [obj.firstName, obj.lastName, obj.username, hashed]);
+            const result = await conn.query(sql, [obj.firstname, obj.lastname, obj.username, hashed]);
             const user = result.rows[0];
             conn.release();
             return user;
         }
         catch (err) {
-            throw new Error(`Could not add new user ${obj.firstName} ${obj.lastName}. Error: ${err}`);
+            throw new Error(`Could not add new user ${obj.firstname} ${obj.lastname}. Error: ${err}`);
         }
     }
     async authenticate(username, password) {
-        const sql = 'SELECT password FROM users WHERE username=($1)';
-        // @ts-ignore
-        const conn = await database_1.default.connect();
-        const result = await conn.query(sql, [username]);
-        if (result.rows.length) {
-            const user = result.rows[0];
-            if (bcrypt_1.default.compareSync(password + pepper, user.password)) {
-                return user;
+        try {
+            const sql = 'SELECT password FROM users WHERE username=($1)';
+            // @ts-ignore
+            const conn = await database_1.default.connect();
+            const result = await conn.query(sql, [username]);
+            if (result.rows.length) {
+                const user = result.rows[0];
+                if (bcrypt_1.default.compareSync(password + pepper, user.password)) {
+                    return user;
+                }
+                else {
+                    throw new Error('Password is invalid');
+                }
             }
+            throw new Error('Invalid username');
         }
-        throw new Error('Password invalid');
+        catch (err) {
+            throw new Error('Can NOT find user');
+        }
+    }
+    async delete(id) {
+        try {
+            const sql = 'DELETE FROM users WHERE id=($1)';
+            // @ts-ignore
+            const conn = await database_1.default.connect();
+            const result = await conn.query(sql, [id]);
+            conn.release();
+            return result.rows[0];
+        }
+        catch (err) {
+            throw new Error(`Could not find user ${id}. Error: ${err}`);
+        }
     }
 }
 exports.userSection = userSection;

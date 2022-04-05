@@ -7,12 +7,24 @@ const product_1 = require("../models/product");
 const authN_1 = __importDefault(require("../middleware/authN"));
 const section = new product_1.productSection();
 const index = async (_req, res) => {
-    const response = await section.index();
-    res.json(response);
+    try {
+        const response = await section.index();
+        res.json(response);
+    }
+    catch (err) {
+        if (err instanceof Error)
+            res.status(500).json({ e: err.message });
+    }
 };
 const show = async (req, res) => {
-    const response = await section.show(req.params.id);
-    res.json(response);
+    try {
+        const response = await section.show(req.params.id);
+        res.json(response);
+    }
+    catch (err) {
+        if (err instanceof Error)
+            res.status(500).json({ e: err.message });
+    }
 };
 const create = async (req, res) => {
     try {

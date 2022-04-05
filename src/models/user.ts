@@ -9,8 +9,8 @@ const saltrounds: string = <string>process.env.SALT_ROUNDS;
 
 export type user = {
   id?: number;
-  firstName: string;
-  lastName: string;
+  firstname: string;
+  lastname: string;
   username: string;
   password: string;
 };
@@ -56,30 +56,52 @@ export class userSection {
 
       const hashed: string = <string>bcrypt.hashSync(obj.password + pepper, parseInt(saltrounds));
 
-      const result = await conn.query(sql, [obj.firstName, obj.lastName, obj.username, hashed]);
+      const result = await conn.query(sql, [obj.firstname, obj.lastname, obj.username, hashed]);
       const user = result.rows[0];
       conn.release();
       return user;
     } catch (err) {
-      throw new Error(`Could not add new user ${obj.firstName} ${obj.lastName}. Error: ${err}`);
+      throw new Error(`Could not add new user ${obj.firstname} ${obj.lastname}. Error: ${err}`);
     }
   }
 
   async authenticate(username: string, password: string): Promise<user | Error> {
-    const sql = 'SELECT password FROM users WHERE username=($1)';
-    // @ts-ignore
-    const conn = await Client.connect();
+    try {
+      const sql = 'SELECT password FROM users WHERE username=($1)';
+      // @ts-ignore
+      const conn = await Client.connect();
 
-    const result = await conn.query(sql, [username]);
+      const result = await conn.query(sql, [username]);
 
-    if (result.rows.length) {
-      const user = result.rows[0];
+      if (result.rows.length) {
+        const user = result.rows[0];
 
-      if (bcrypt.compareSync(password + pepper, user.password)) {
-        return user;
+        if (bcrypt.compareSync(password + pepper, user.password)) {
+          return user;
+        } else {
+          throw new Error('Password is invalid');
+        }
       }
+      throw new Error('Invalid username');
+    } catch (err) {
+      throw new Error('Can NOT find user');
     }
+  }
 
-    throw new Error('Password invalid');
+
+  async delete(id: string): Promise<user> {
+    try {
+      const sql = 'DELETE FROM users WHERE id=($1)';
+      // @ts-ignore
+      const conn = await Client.connect();
+
+      const result = await conn.query(sql, [id]);
+
+      conn.release();
+
+      return result.rows[0];
+    } catch (err) {
+      throw new Error(`Could not find user ${id}. Error: ${err}`);
+    }
   }
 }

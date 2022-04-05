@@ -1,16 +1,22 @@
 // @ts-ignore
 import Client from '../database';
 
-enum status {
+export enum status {
   active = 'active',
   complete = 'complete',
 }
 
 export type order = {
   id?: number;
-  user_id: number;
+  user_id: string;
   curr_status: status;
 };
+export type order_product = {
+  id?: number,
+  product_id: string,
+  order_id: string,
+  qnt_product: number
+}
 
 export class orderSection {
   async index(): Promise<order[]> {
@@ -63,7 +69,7 @@ export class orderSection {
     }
   }
 
-  async addProduct(productId: string, orderId: string, qnt_product: number): Promise<order> {
+  async addProduct(productId: string, orderId: string, qnt_product: number): Promise<order_product> {
     try {
       const sql = 'INSERT INTO order_products (product_id, order_id, qnt_product) VALUES($1, $2, $3) RETURNING *';
       //@ts-ignore
@@ -72,7 +78,7 @@ export class orderSection {
       const result = await conn.query(sql, [productId, orderId, qnt_product]);
 
       const order = result.rows[0];
-    //   console.log(order);
+      //   console.log(order);
       conn.release();
 
       return order;

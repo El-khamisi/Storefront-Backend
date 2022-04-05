@@ -3,14 +3,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.orderSection = void 0;
+exports.orderSection = exports.status = void 0;
 // @ts-ignore
 const database_1 = __importDefault(require("../database"));
 var status;
 (function (status) {
     status["active"] = "active";
     status["complete"] = "complete";
-})(status || (status = {}));
+})(status = exports.status || (exports.status = {}));
 class orderSection {
     async index() {
         try {

@@ -10,20 +10,28 @@ const TOKEN_SECRET: string = <string>process.env.TOKEN_SECRET;
 const section = new userSection();
 
 const index = async (_req: Request, res: Response) => {
-  const response = await section.index();
-  res.json(response);
+  try {
+    const response = await section.index();
+    res.json(response);
+  } catch (err) {
+    if (err instanceof Error) res.status(500).json({ e: err.message });
+  }
 };
 
 const show = async (req: Request, res: Response) => {
-  const response = await section.show(req.params.id);
-  res.json(response);
+  try {
+    const response = await section.show(req.params.id);
+    res.json(response);
+  } catch (err) {
+    if (err instanceof Error) res.status(500).json({ e: err.message });
+  }
 };
 
 const create = async (req: Request, res: Response) => {
   try {
     const nUser: user = {
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
       username: req.body.username,
       password: req.body.password,
     };
