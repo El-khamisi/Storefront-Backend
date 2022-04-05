@@ -46,12 +46,13 @@ const port = process.env.PORT || 5050
 ## npm package.json scripts
 npm run -----
 ```
+"clean": "rm -rf dist",
 "build": "npx tsc",
 "devServer": "nodemon src/server.ts",
 "start": "npm run build && node './dist/server.js'",
 "jasmine": "jasmine",
 "migrate": "db-migrate --env test up && db-migrate up",
-"test": "ENV=test db-migrate --env test up && npm run build && npm run jasmine && db-migrate db:drop test",
+"test": "npm run clean &&  db-migrate --env test up &&  npm run build && ENV=test npm run jasmine  && db-migrate --env test reset",
 "lint": "eslint . --ext .ts",
 "prettier": "prettier --config .prettierrc 'src/**/*.ts' --write"
 ```
