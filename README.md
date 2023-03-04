@@ -1,8 +1,7 @@
-# Image-Processing-API
+# Storefront Backend
 
 ## Description
-A backend project( based on node.js and express framework) using `postgres` database to create users, products, and orders that user can access them by endpoints API and doing CRUD on them.
-Written in `typescript` enhanced with `jasmine` unit test framework to ensure the websita has less errors rather than `plain js`
+A backend project( based on node.js and express framework) using docker image of `postgresql` to spin a database container to create users, products, and orders that users can access by endpoints API and doing CRUD on them.
 
 
 ### Executing program
